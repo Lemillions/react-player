@@ -1,4 +1,4 @@
-import Hls from "hls.js";
+import dashjs from "dashjs";
 import { useRef, useState, useEffect } from "react";
 import { BsFillPlayFill, BsFillPauseFill, BsGearFill } from "react-icons/bs";
 import { BiFullscreen, BiExitFullscreen } from "react-icons/bi";
@@ -10,11 +10,11 @@ import "./styles.css";
 
 type MenuType = "legenda" | "audio" | "qualidade" | "velocidade" | "default";
 
-export default function PlayerHLS(props: { url: string }) {
+export default function PlayerDASH(props: { url: string }) {
   const { url } = props;
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const hlsRef = useRef<Hls | null>(null);
+  const dashRef = useRef<dashjs.MediaPlayerClass>();
   const duracaoRef = useRef<HTMLInputElement | null>(null);
   const [showMenu, setShowMenu] = useState(false);
   const [menu, setMenu] = useState<MenuType>("default");
@@ -33,157 +33,79 @@ export default function PlayerHLS(props: { url: string }) {
   const [telacheia, setTelacheia] = useState(false);
 
   useEffect(() => {
-    setMenu("default");
-  }, [showMenu]);
-
-  useEffect(() => {
-    if (Hls.isSupported() && videoRef.current) {
-      const hls = new Hls({
-       "lowLatencyMode": true
+    if (containerRef.current && videoRef.current) {
+      const player = dashjs.MediaPlayer().create();
+      player.initialize(videoRef.current, url, true);
+      dashRef.current = player;
+      player.on("error", (e: any) => {
+        console.log("Erro no player", e);
       });
-
-      hlsRef.current = hls;
-      hls.loadSource(url);
-      hls.attachMedia(videoRef.current);
-
-      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-        setListaQualidades(data.levels);
-        setQualidadeAtual(-1);
-        if (videoRef.current) {
-          videoRef.current.play();
-        }
+      player.on("playbackMetaDataLoaded", () => {
+        const qualidades = player.getBitrateInfoListFor("video");
+        setListaQualidades(qualidades);
+        const legendas = player.getTracksFor("text");
+        setListaLegendas(legendas);
+        const audios = player.getTracksFor("audio");
+        setListaAudios(audios);
+        setQualidadeAtual(player.getQualityFor("video"));
+        setDuracao(player.duration());
+        setTempoAtual(player.time());
+        setVolume(player.getVolume());
+        setMuted(player.isMuted());
+        setPlaying(!player.isPaused());
+        setVelocidade(player.getPlaybackRate());
       });
-
-      hls.on(Hls.Events.ERROR, function (event, data) {
-        if (data.fatal) {
-          switch (data.type) {
-            case Hls.ErrorTypes.NETWORK_ERROR:
-              // try to recover network error
-              console.log("fatal network error encountered, try to recover");
-              hls.startLoad();
-              break;
-            case Hls.ErrorTypes.MEDIA_ERROR:
-              console.log("fatal media error encountered, try to recover");
-              hls.recoverMediaError();
-              break;
-            default:
-              // cannot recover
-              hls.destroy();
-              break;
-          }
-        }
+      player.on("playbackTimeUpdated", () => {
+        setTempoAtual(player.time());
       });
+    }}, [url]);
 
-      return () => hls.destroy();
-    }
-  }, [url]);
+  console.log("listaQualidades", listaQualidades);
+  console.log("listaLegendas", listaLegendas);
+  console.log("listaAudios", listaAudios);
 
-  const carregarDados = () => {
-    if (videoRef.current) {
-      const legendasMap = [];
-      for (let i = 0; i < (videoRef.current.textTracks.length || 0); i++) {
-        legendasMap.push({
-          id: i,
-          label: videoRef.current?.textTracks[i].label,
-        });
-      }
-      setListaLegendas(legendasMap);
-      desativarLegendas();
-      setDuracao(videoRef.current.duration);
-    }
+  const mudarLegenda = (index: number) => {
+    dashRef.current?.setTextTrack(index);
+    setLegendaAtual(index);
+  }
 
-    if (hlsRef.current) {
-      const audiosMap = [];
-      for (let i = 0; i < (hlsRef.current.audioTracks.length || 0); i++) {
-        audiosMap.push({
-          id: i,
-          name: hlsRef.current.audioTracks[i].name,
-        });
-      }
-      setListaAudios(audiosMap);
-      hlsRef.current.audioTrack = audioAtual;
-    }
-  };
+  const mudarAudio = (index: number) => {
+    dashRef.current?.setCurrentTrack(listaAudios[index]);
+    setAudioAtual(index);
+  }
 
-  useEffect(() => {
-    console.log("listaQualidades", listaQualidades);
-    console.log("listaLegendas", listaLegendas);
-    console.log("listaAudios", listaAudios);
-  }, [listaQualidades, listaLegendas, listaAudios]);
-
-  const desativarLegendas = () => {
-    listaLegendas.forEach((legenda) => {
-      if (videoRef.current) {
-        videoRef.current.textTracks[legenda.id].mode = "hidden";
-      }
-    });
-  };
-  const mudarLegenda = (id: number) => {
-    desativarLegendas();
-    if (videoRef.current) {
-      videoRef.current.textTracks[id].mode = "showing";
-      setLegendaAtual(id);
-    }
-  };
-
-  const mudarAudio = (id: number) => {
-    if (hlsRef.current) {
-      hlsRef.current.audioTrack = id;
-      setAudioAtual(id);
-    }
-  };
-
-  const mudarQualidade = (id: number) => {
-    if (hlsRef.current) {
-      hlsRef.current.currentLevel = id;
-      setQualidadeAtual(id);
-    }
-  };
+  const mudarQualidade = (index: number) => {
+    dashRef.current?.setQualityFor("video", index, true);
+    setQualidadeAtual(index);
+  }
 
   const mudarVelocidade = (velocidade: number) => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = velocidade;
-      setVelocidade(velocidade);
-    }
-  };
-
-  const mudarTempoAtual = (tempo: number) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = tempo;
-      setTempoAtual(tempo);
-    }
-  };
+    dashRef.current?.setPlaybackRate(velocidade);
+    setVelocidade(velocidade);
+  }
 
   const mudarPlaying = () => {
-    if (videoRef.current) {
-      if (videoRef.current.paused) {
-        videoRef.current.play();
-        setPlaying(true);
-      } else {
-        videoRef.current.pause();
-        setPlaying(false);
-      }
-    }
-  };
+    dashRef.current?.isPaused() ? dashRef.current?.play() : dashRef.current?.pause();
+  }
 
   const mudarVolume = (volume: number) => {
-    if (videoRef.current) {
-      videoRef.current.volume = volume;
-      setVolume(volume);
-    }
-  };
+    dashRef.current?.setVolume(volume);
+    setVolume(volume);
+  }
+
+  const mudarTempoAtual = (tempo: number) => {
+    dashRef.current?.seek(tempo);
+    setTempoAtual(tempo);
+  }
 
   const mudarTelacheia = () => {
-    if (containerRef.current) {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-        setTelacheia(false);
-      } else {
-        containerRef.current.requestFullscreen();
-        setTelacheia(true);
-      }
+    if (telacheia) {
+      document.exitFullscreen();
+    } else {
+      containerRef.current?.requestFullscreen();
     }
-  };
+    setTelacheia(!telacheia);
+  }
 
   const returnMenu = () => {
     switch (menu) {
@@ -198,11 +120,11 @@ export default function PlayerHLS(props: { url: string }) {
                 onClick={() => mudarLegenda(index)}
                 style={legendaAtual == index ? { background: "blue" } : {}}
               >
-                {legenda.label}
+                {legenda.lang}
               </button>
             ))}
             <button
-              onClick={() => desativarLegendas()}
+              onClick={() => mudarLegenda(-1)}
               style={legendaAtual == -1 ? { background: "blue" } : {}}
             >
               Desativar Legendas
@@ -220,7 +142,7 @@ export default function PlayerHLS(props: { url: string }) {
                 onClick={() => mudarAudio(index)}
                 style={audioAtual == index ? { background: "blue" } : {}}
               >
-                {audio.name}
+                {audio.lang}
               </button>
             ))}
           </>
@@ -317,10 +239,8 @@ export default function PlayerHLS(props: { url: string }) {
         ref={videoRef}
         autoPlay={true}
         muted={muted}
-        onLoadedMetadata={() => {
-          carregarDados();
-        }}
         onProgress={(progress: any) => {
+          console.log("progress", progress);
           if (duracaoRef.current) {
             duracaoRef.current.value = progress.target.currentTime;
           }
@@ -481,5 +401,5 @@ export default function PlayerHLS(props: { url: string }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
