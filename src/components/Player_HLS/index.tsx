@@ -196,14 +196,14 @@ export default function PlayerHLS(props: { url: string }) {
               <button
                 key={index}
                 onClick={() => mudarLegenda(index)}
-                style={legendaAtual == index ? { background: "blue" } : {}}
+                className={legendaAtual == index ? "bg-blue-500" : ""}
               >
                 {legenda.label}
               </button>
             ))}
             <button
               onClick={() => desativarLegendas()}
-              style={legendaAtual == -1 ? { background: "blue" } : {}}
+              className={legendaAtual == -1 ? "bg-blue-500" : ""}
             >
               Desativar Legendas
             </button>
@@ -218,7 +218,7 @@ export default function PlayerHLS(props: { url: string }) {
               <button
                 key={index}
                 onClick={() => mudarAudio(index)}
-                style={audioAtual == index ? { background: "blue" } : {}}
+                className={audioAtual == index ? "bg-blue-500" : ""}
               >
                 {audio.name}
               </button>
@@ -233,7 +233,7 @@ export default function PlayerHLS(props: { url: string }) {
             <button
               key={-1}
               onClick={() => mudarQualidade(-1)}
-              style={qualidadeAtual == -1 ? { background: "blue" } : {}}
+              className={qualidadeAtual == -1 ? "bg-blue-500" : ""}
             >
               Auto
             </button>
@@ -241,7 +241,7 @@ export default function PlayerHLS(props: { url: string }) {
               <button
                 key={index}
                 onClick={() => mudarQualidade(index)}
-                style={qualidadeAtual == index ? { background: "blue" } : {}}
+                className={qualidadeAtual == index ? "bg-blue-500" : ""}
               >
                 {qualidade.height}p
               </button>
@@ -255,25 +255,25 @@ export default function PlayerHLS(props: { url: string }) {
             <span>Velocidades:</span>
             <button
               onClick={() => mudarVelocidade(0.5)}
-              style={velocidade == 0.5 ? { background: "blue" } : {}}
+              className={velocidade == 0.5 ? "bg-blue-500" : ""}
             >
               0.5x
             </button>
             <button
               onClick={() => mudarVelocidade(1)}
-              style={velocidade == 1 ? { background: "blue" } : {}}
+              className={velocidade == 1 ? "bg-blue-500" : ""}
             >
               1x
             </button>
             <button
               onClick={() => mudarVelocidade(1.5)}
-              style={velocidade == 1.5 ? { background: "blue" } : {}}
+              className={velocidade == 1.5 ? "bg-blue-500" : ""}
             >
               1.5x
             </button>
             <button
               onClick={() => mudarVelocidade(2)}
-              style={velocidade == 2 ? { background: "blue" } : {}}
+              className={velocidade == 2 ? "bg-blue-500" : ""}
             >
               2x
             </button>
@@ -316,16 +316,10 @@ export default function PlayerHLS(props: { url: string }) {
           setTempoAtual(progress.target.currentTime);
         }}
       />
-      <div id="controles-container">
+      <div className="controles-container">
         <div className="controles-linha">
           <div className="flex-centralizada">
-            <span
-              style={{
-                color: "#fff",
-                fontSize: "12px",
-                padding: "0 5px",
-              }}
-            >
+            <span className="text-white text-xs px-1">
               {formatterSecondsToTime(tempoAtual, duracao)}
             </span>
             <input
@@ -344,13 +338,7 @@ export default function PlayerHLS(props: { url: string }) {
                 mudarTempoAtual(parseInt(e.target.value));
               }}
             />
-            <span
-              style={{
-                color: "#fff",
-                fontSize: "12px",
-                padding: "0 5px",
-              }}
-            >
+            <span className="text-white text-xs px-1">
               {formatterSecondsToTime(duracao, duracao)}
             </span>
           </div>
@@ -374,13 +362,7 @@ export default function PlayerHLS(props: { url: string }) {
             </div>
             <div className="controle">
               <div
-                style={{
-                  height: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "140px",
-                }}
+                className="h-full flex justify-center items-center w-35"
               >
                 {
                   muted ? (
@@ -416,10 +398,7 @@ export default function PlayerHLS(props: { url: string }) {
             </div>
           </div>
           <div
-            className="flex-centralizada"
-            style={{
-              justifyContent: "flex-end",
-            }}
+            className="flex-centralizada justify-end"
           >
             <div className="controle">
               <BsGearFill
@@ -428,24 +407,8 @@ export default function PlayerHLS(props: { url: string }) {
                 onClick={() => setShowMenu(!showMenu)}
               />
               {showMenu && (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "30px",
-                    right: "40px",
-                    background: "#000000d7",
-                    padding: "10px",
-                    borderRadius: "5px",
-                    boxShadow: "0 0 5px rgba(0,0,0,0.5)",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "5px",
-                    }}
-                  >
+                <div className="absolute bottom-8 right-10 bg-black/85 p-2.5 rounded shadow-lg">
+                  <div className="flex flex-col gap-1">
                     {returnMenu()}
                   </div>
                 </div>
