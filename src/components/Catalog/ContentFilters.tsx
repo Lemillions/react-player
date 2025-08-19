@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ContentFilters } from '../../types';
 import { contentAPI } from '../../services/api';
+import { MdSearch } from 'react-icons/md';
 import './Catalog.css';
 
 interface ContentFiltersProps {
@@ -68,7 +69,7 @@ export default function ContentFiltersComponent({ filters, onFiltersChange }: Co
             className="search-input"
           />
           <button type="submit" className="search-button">
-            🔍
+            <MdSearch />
           </button>
         </form>
       </div>

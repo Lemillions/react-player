@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { MdArrowDropDown } from 'react-icons/md';
 import './Layout.css';
 
 interface LayoutProps {
@@ -69,7 +70,7 @@ export default function Layout({ children, onNavigate, currentPage }: LayoutProp
               
               <div className="user-dropdown">
                 <button className="user-button">
-                  {state.user?.name} ▼
+                  {state.user?.name} <MdArrowDropDown />
                 </button>
                 <div className="dropdown-menu">
                   <button onClick={handleProfileChange}>Switch Profile</button>

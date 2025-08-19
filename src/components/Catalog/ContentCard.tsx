@@ -1,5 +1,6 @@
 import React from 'react';
 import { Content } from '../../types';
+import { MdPlayArrow, MdAdd, MdFavorite, MdMovie, MdTv, MdRadio, MdVideoLibrary } from 'react-icons/md';
 import './Catalog.css';
 
 interface ContentCardProps {
@@ -17,10 +18,10 @@ export default function ContentCard({
 }: ContentCardProps) {
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'MOVIE': return '🎬';
-      case 'SERIES': return '📺';
-      case 'CHANNEL': return '📻';
-      default: return '📽️';
+      case 'MOVIE': return <MdMovie />;
+      case 'SERIES': return <MdTv />;
+      case 'CHANNEL': return <MdRadio />;
+      default: return <MdVideoLibrary />;
     }
   };
 
@@ -52,7 +53,7 @@ export default function ContentCard({
             onClick={() => onPlay(content)}
             title="Play"
           >
-            ▶️
+            <MdPlayArrow />
           </button>
           
           <div className="action-buttons">
@@ -62,7 +63,7 @@ export default function ContentCard({
                 onClick={() => onAddToWatchlist(content)}
                 title="Add to Watchlist"
               >
-                ➕
+                <MdAdd />
               </button>
             )}
             
@@ -72,7 +73,7 @@ export default function ContentCard({
                 onClick={() => onAddToFavorites(content)}
                 title="Add to Favorites"
               >
-                ❤️
+                <MdFavorite />
               </button>
             )}
           </div>

@@ -3,6 +3,7 @@ import { useVideoUrl } from '../hooks/useContent';
 import { analyticsAPI } from '../services/api';
 import { Content, Episode } from '../types';
 import VideoPlayer from '../components/Player';
+import { MdArrowBack } from 'react-icons/md';
 
 interface PlayerPageProps {
   content: Content;
@@ -59,7 +60,7 @@ export default function PlayerPage({ content, episode, onBack }: PlayerPageProps
       <div className="player-loading">
         <h2>Loading video...</h2>
         <button onClick={onBack} className="back-button">
-          ← Back
+          <MdArrowBack /> Back
         </button>
       </div>
     );
@@ -71,7 +72,7 @@ export default function PlayerPage({ content, episode, onBack }: PlayerPageProps
         <h2>Unable to load video</h2>
         <p>{error || 'Video not found'}</p>
         <button onClick={onBack} className="back-button">
-          ← Back
+          <MdArrowBack /> Back
         </button>
       </div>
     );
@@ -85,7 +86,7 @@ export default function PlayerPage({ content, episode, onBack }: PlayerPageProps
     <div className="player-page">
       <div className="player-header">
         <button onClick={onBack} className="back-button">
-          ← Back
+          <MdArrowBack /> Back
         </button>
         <h1>{title}</h1>
       </div>

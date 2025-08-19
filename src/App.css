@@ -5,17 +5,19 @@
 html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f8f9fa;
-  color: #333;
+  background-color: #0a0e1a;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .App {
   min-height: 100vh;
+  width: 100%;
 }
 
 /* Global button styles */
