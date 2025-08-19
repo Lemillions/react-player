@@ -46,7 +46,7 @@ export default function PlayerHLS(props: { url: string }) {
       hls.loadSource(url);
       hls.attachMedia(videoRef.current);
 
-      hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+      hls.on(Hls.Events.MANIFEST_PARSED, function (_, data) {
         setListaQualidades(data.levels);
         setQualidadeAtual(-1);
         if (videoRef.current) {
@@ -54,7 +54,7 @@ export default function PlayerHLS(props: { url: string }) {
         }
       });
 
-      hls.on(Hls.Events.ERROR, function (event, data) {
+      hls.on(Hls.Events.ERROR, function (_, data) {
         if (data.fatal) {
           switch (data.type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
