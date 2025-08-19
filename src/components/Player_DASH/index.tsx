@@ -218,23 +218,12 @@ export default function PlayerDASH(props: { url: string }) {
 
   return (
     <div
-      style={{
-        width: "100%",
-        height: "100%",
-        position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#000",
-      }}
+      className="w-full h-full relative flex flex-col items-center justify-center bg-black"
       ref={containerRef}
     >
       <video
         id="video"
-        style={{
-          width: "100%",
-        }}
+        className="w-full"
         controls={false}
         ref={videoRef}
         autoPlay={true}
@@ -250,13 +239,7 @@ export default function PlayerDASH(props: { url: string }) {
       <div id="controles-container">
         <div className="controles-linha">
           <div className="flex-centralizada">
-            <span
-              style={{
-                color: "#fff",
-                fontSize: "12px",
-                padding: "0 5px",
-              }}
-            >
+            <span className="text-white text-xs px-1">
               {formatterSecondsToTime(tempoAtual, duracao)}
             </span>
             <input
@@ -275,13 +258,7 @@ export default function PlayerDASH(props: { url: string }) {
                 mudarTempoAtual(parseInt(e.target.value));
               }}
             />
-            <span
-              style={{
-                color: "#fff",
-                fontSize: "12px",
-                padding: "0 5px",
-              }}
-            >
+            <span className="text-white text-xs px-1">
               {formatterSecondsToTime(duracao, duracao)}
             </span>
           </div>
@@ -305,13 +282,7 @@ export default function PlayerDASH(props: { url: string }) {
             </div>
             <div className="controle">
               <div
-                style={{
-                  height: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "140px",
-                }}
+                className="h-full flex justify-center items-center w-35"
               >
                 {
                   muted ? (
@@ -347,10 +318,7 @@ export default function PlayerDASH(props: { url: string }) {
             </div>
           </div>
           <div
-            className="flex-centralizada"
-            style={{
-              justifyContent: "flex-end",
-            }}
+            className="flex-centralizada justify-end"
           >
             <div className="controle">
               <BsGearFill
@@ -359,24 +327,8 @@ export default function PlayerDASH(props: { url: string }) {
                 onClick={() => setShowMenu(!showMenu)}
               />
               {showMenu && (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "30px",
-                    right: "40px",
-                    background: "#000000d7",
-                    padding: "10px",
-                    borderRadius: "5px",
-                    boxShadow: "0 0 5px rgba(0,0,0,0.5)",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "5px",
-                    }}
-                  >
+                <div className="absolute bottom-8 right-10 bg-black/85 p-2.5 rounded shadow-lg">
+                  <div className="flex flex-col gap-1">
                     {returnMenu()}
                   </div>
                 </div>

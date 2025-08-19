@@ -296,23 +296,12 @@ export default function PlayerHLS(props: { url: string }) {
 
   return (
     <div
-      style={{
-        width: "100%",
-        height: "100%",
-        position: "relative",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#000",
-      }}
+      className="w-full h-full relative flex flex-col items-center justify-center bg-black"
       ref={containerRef}
     >
       <video
         id="video"
-        style={{
-          width: "100%",
-        }}
+        className="w-full"
         controls={false}
         ref={videoRef}
         autoPlay={true}
